@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <CitiesSkylinesPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines</CitiesSkylinesPath>
+    <ManagedPath>$(CitiesSkylinesPath)\Cities_Data\Managed</ManagedPath>
+    <WorkshopPath>$(CitiesSkylinesPath)\..\..\workshop\content\255710</WorkshopPath>
+
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CS2StyleJunctions</RootNamespace>
+    <AssemblyName>CS2StyleJunctions</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Core CS1 game assemblies -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ManagedPath)\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICities">
+      <HintPath>$(ManagedPath)\ICities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ColossalManaged">
+      <HintPath>$(ManagedPath)\ColossalManaged.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(ManagedPath)\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- CitiesHarmony.API: shipped by Node Controller Renewal (workshop ID 2472062376) -->
+    <Reference Include="CitiesHarmony.API">
+      <HintPath>$(WorkshopPath)\2472062376\CitiesHarmony.API.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- The Harmony 2.x library, renamed by CitiesHarmony to CitiesHarmony.Harmony.dll
+         to avoid version conflicts with mods that bundle their own Harmony.
+         Lives in CitiesHarmony's workshop folder (2040656402). -->
+    <Reference Include="0Harmony">
+      <HintPath>$(WorkshopPath)\2040656402\CitiesHarmony.Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Source\Mod.cs" />
+    <Compile Include="Source\HarmonyManager.cs" />
+    <Compile Include="Source\JunctionAnalyzer.cs" />
+    <Compile Include="Source\JunctionSettings.cs" />
+    <Compile Include="Source\NodeRegistry.cs" />
+    <Compile Include="Source\LoadingHandler.cs" />
+    <Compile Include="Source\UI\SettingsPanel.cs" />
+    <Compile Include="Source\UI\UIManager.cs" />
+    <Compile Include="Patches\NetNodePatches.cs" />
+    <Compile Include="Patches\ReleasePatches.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <!-- Auto-deploy on successful build: copies the DLL to your CS1 local mods folder -->
+  <Target Name="AfterBuild">
+    <PropertyGroup>
+      <ModDeployPath>$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\CS2StyleJunctions</ModDeployPath>
+    </PropertyGroup>
+    <MakeDir Directories="$(ModDeployPath)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(ModDeployPath)" />
+  </Target>
+</Project>
